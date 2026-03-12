@@ -5,4 +5,4 @@ const router = express.Router();
 
 router.post("/", handleGenerateNewShortURL);
 
-module.export = router;
+module.exports = router;
