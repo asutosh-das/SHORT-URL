@@ -13,13 +13,17 @@ async function handleGenerateNewShortURL(req, res) {
     visitHistory: [],
   });
 
-  return res.json({ id: shortID });
+  const allurls = await URL.find({});
+  return res.render("home", {
+    id: shortID,
+    urls: allurls,
+  });
 }
 
 async function handleGetAnalytics(req, res) {
   const shortId = req.params.shortId;
   const result = await URL.findOne({ shortId });
-  
+
   if (!result) return res.status(404).json({ error: "URL not found" });
 
   return res.json({
