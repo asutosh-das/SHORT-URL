@@ -3,7 +3,7 @@ const path = require("path");
 const { connectToMongooDB } = require("./connect");
 const cookieParser = require("cookie-parser");
 
-const { restrictToLoggedInUserOnly, checkAuth } = require("./middlewares/auth");
+const { checkForAuthentication, restrictTo } = require("./middlewares/auth");
 
 const staticRoute = require("./routes/staticRouter");
 const urlRoute = require("./routes/url");
@@ -13,9 +13,11 @@ const app = express();
 const PORT = 8001;
 const URL = require("./models/url");
 
-connectToMongooDB("mongodb://127.0.0.1:27017/short-url").then(() =>
-  console.log("MongoDB Connected"),
-);
+connectToMongooDB("mongodb://127.0.0.1:27017/short-url")
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) =>
+    console.log("MongoDB ERROR: Is MongoDB running? ", err.message),
+  );
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
@@ -23,9 +25,11 @@ app.set("views", path.resolve("./views"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(checkForAuthentication);
 
-app.use("/", checkAuth, staticRoute);
-app.use("/url", restrictToLoggedInUserOnly, urlRoute);
+app.use("/", staticRoute);
+// app.use("/url", restrictToLoggedInUserOnly, urlRoute);
+app.use("/url", restrictTo(["NORMAL", "ADMIN"]), urlRoute);
 app.use("/user", userRoute);
 
 app.get("/test", async (req, res) => {

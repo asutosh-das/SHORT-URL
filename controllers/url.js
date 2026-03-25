@@ -15,10 +15,13 @@ async function handleGenerateNewShortURL(req, res) {
   });
 
   const allurls = await URL.find({});
-  return res.render("home", {
-    id: shortID,
-    urls: allurls,
-  });
+    return res.render("home", {
+      id: shortID,
+      urls: allurls,
+    });
+  // return res.redirect("/");
+
+  
 }
 
 async function handleGetAnalytics(req, res) {
