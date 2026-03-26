@@ -141,6 +141,4 @@ SHORT-URL/
 ```
 
 ---
-<div align="center">
-  <p>Built with ❤️ and Node.js</p>
-</div>
+
